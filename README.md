@@ -1,4 +1,4 @@
-# GraphQl using MERN stack
+# GraphQL using MERN stack
 
 This project shows use of GraphQL in MERN stack with user login and event add functionality.
 
