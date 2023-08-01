@@ -1,6 +1,8 @@
 const { dateToString } = require('../../helpers/date');
 const Event = require('../../model/event');
 const { userDB, transformEvent } = require('./merge')
+const User = require('../../model/user');
+
 
 
 
@@ -18,7 +20,7 @@ module.exports = {
             throw err;
         }
     },
-    createEvent: async (args) => {
+    createEvent: async (args, req) => {
         // const eventName = args.name 
         // return eventName
         // const event = {
@@ -28,12 +30,15 @@ module.exports = {
         //     price: +args.eventInput.price,
         //     date: args.eventInput.date,
         // }
+        if(!req.isAuth){
+            throw new Error('Unauthorized!');
+        }
         const event = new Event({
             title: args.eventInput.title,
             description: args.eventInput.description,
             price: +args.eventInput.price,
             date: new Date(args.eventInput.date),
-            createdBy: '64c20fb64a7af7f753fe0d45'
+            createdBy: req.userId
         })
 
         let createdEvent;
@@ -41,7 +46,7 @@ module.exports = {
         try {
             const result_1 = await event.save();
             createdEvent = transformEvent(result_1)
-            const user = await User.findById('64c20fb64a7af7f753fe0d45');
+            const user = await User.findById(req.userId);
             if (!user) {
                 throw new Error(`No user record exists`);
             }
